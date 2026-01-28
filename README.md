@@ -91,6 +91,8 @@ Search for this, and you will find!
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
+<a href = https://download.geofabrik.de/north-america/us/pennsylvania.html> Click here </a> to download osm.pbf file or zipped shape file for PA roads 
+
 
 <a href="#fielddatacollection_roadsegments_osm2shp">Back to top</a>
 
