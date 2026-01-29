@@ -38,12 +38,12 @@ function geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, varargin)
 %
 %       See the script:
 %
-%       script_test_fcn_plotRoad_plotLL.m 
+%       script_test_fcn_OSM2SHP_plotSHP.m 
 %
 %       for a full test suite.
 %
-% This function was written on 2024_08_13 by S. Brennan
-% Questions or comments? snb10@psu.edu
+% This function was written on 2026_01_27 by Aneesh Batchu
+% Questions or comments? abb6486@psu.edu or snb10@psu.edu
 
 
 % REVISION HISTORY:
@@ -153,6 +153,9 @@ if flag_do_plots
 
     figure(figNum)
     geoplot(geospatial_table, 'LineWidth', 1)
+    % Example: Plotting with a custom basemap
+    % geoplot(lat, lon)
+    geobasemap('satellite') % Options: 'streets-light', 'streets-dark', 'topographic', 'grayland', 'bluegreen', etc.
 
 end
 

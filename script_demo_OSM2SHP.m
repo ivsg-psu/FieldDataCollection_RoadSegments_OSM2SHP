@@ -10,7 +10,7 @@
 % abb6486@psu.edu or Sean Brennan at sbrennan@psu.edu
 %
 % The purpose of the code is to generate shape (.shp) files from OSM
-% (.osm.pbf) files
+% (.osm.pbf) files and geoplot the shape files.
 
 % REVISION HISTORY:
 % 
@@ -18,8 +18,40 @@
 % - wrote the code originally
 
 % TO-DO:
-% 2026_01_27 by Aneesh Batchu, abb6486@psu.edu
-% - Update ReadMe.md 
+% 
+% 2026_01_29 - Aneesh Batchu (abb6486@psu.edu)
+% - Update README.md with geoplots using multiple geobasemaps
+%   % * Include geobasemaps such as 'satellite' and 'osm_standard'
+%   % * Create separate plots zoomed into specific locations
+%   %   % -- Example: South Atherton Street & W College Avenue
+%   %   % -- Example: I-80
+% - Figure out how to download and cache the underlying basemaps used by
+%   % geoplots for offline or reproducible plotting
+% - Use the PlotRoad repository to plot shapefiles
+%   % * PlotRoad allows easy modification of plotting options
+% - Understand how road segments are defined and stored within shapefiles
+%   % * Enable lookup of specific road segments
+%   % * Allow comparison with external datasets
+%   %   % -- Example: PennDOT data
+%   %   % -- Example: PSU-collected mapping van data (our data)
+% - Determine which road or region to map first
+%   % * Develop a tool to compute RMSE between corresponding road segments
+%   %   % -- For each point on Curve A, compute shortest (perpendicular)
+%   %   %    distance to Curve B
+%   %   % -- Compute RMSE of these distances as a similarity metric
+% - Develop code to zoom into satellite views of roads
+%   % * Extract road geometry features
+%   %   % -- Example: lane markers (solid white, double yellow)
+% - Develop code to plot multiple geobasemaps side-by-side
+%   % * To enable visual comparison between OSM and satellite basemaps
+% - Convert shapefile timestamps stored in geospatial_table into
+%   % human/computer readable formats
+%   % * Include date, time, and time zone
+%   % * Example: interpret raw timestamp value such as 1761402494
+
+
+
+
 
 %% Instructions to create Data folder
 % 
@@ -145,13 +177,33 @@ disp('Welcome to the demo code for the OSM2SHP library! Please read the Instruct
 figNum = 10001;
 titleString = sprintf('fcn_OSM2SHP_plotSHP: Plots the roads in the shape file');
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); clf;
+figure(figNum); 
+clf;
 
 % Shape file string of PA highways 
 shapeFileString = "PA_highways.shp";
 
 % Call the function
 geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, figNum);
+
+% % Use this to create "osm_standard" options for geobasemap
+% name = "osm_standard";
+% url = "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png";
+% attribution = "© OpenStreetMap contributors";
+% addCustomBasemap(name, url, 'Attribution', attribution);
+% geobasemap(name);
+
+% geobasemap('osm_standard') % Plots the data (roads) on a OSM standard basemap
+
+geobasemap('satellite') % Options: 'streets-light', 'streets-dark', 'topographic', 'grayland', 'bluegreen', etc.
+temp = gca; 
+
+%  set(temp, 'MapCenter', [40.826378084422814 -77.843653529278654],
+%  'ZoomLevel', 22);  % - Highway
+
+set(temp, 'MapCenter', [40.791630149396873 -77.864521115414732], 'ZoomLevel', 22);  % Intersection between South Atherton and W. College Ave
+
+
 
 % Assertions
 % Make sure plot opened up
