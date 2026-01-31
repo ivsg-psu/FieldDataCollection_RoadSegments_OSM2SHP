@@ -32,7 +32,8 @@ function geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, varargin)
 %
 % DEPENDENCIES:
 %
-%      (none)
+%      readgeotable
+%      fcn_DebugTools_checkInputsToFunctions
 %
 % EXAMPLES:
 %
@@ -50,6 +51,11 @@ function geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, varargin)
 %
 % 2026_01_27 by Aneesh Batchu, abb6486@psu.edu
 % - wrote the code originally
+%
+% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_OSM2SHP_plotSHP
+%   % * fixed global flags from DEBUGTOOLS to OSM2SHP
+%   % * added input checking 
 
 % TO-DO:
 %
@@ -72,11 +78,11 @@ else
     % Check to see if we are externally setting debug mode to be "on"
     flag_do_debug = 0; %     % Flag to plot the results for debugging
     flag_check_inputs = 1; % Flag to perform input checking
-    MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
-    MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
-    if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
-        flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG); 
-        flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
+    MATLABFLAG_OSM2SHP_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_OSM2SHP_FLAG_CHECK_INPUTS");
+    MATLABFLAG_OSM2SHP_FLAG_DO_DEBUG = getenv("MATLABFLAG_OSM2SHP_FLAG_DO_DEBUG");
+    if ~isempty(MATLABFLAG_OSM2SHP_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_OSM2SHP_FLAG_DO_DEBUG)
+        flag_do_debug = str2double(MATLABFLAG_OSM2SHP_FLAG_DO_DEBUG); 
+        flag_check_inputs  = str2double(MATLABFLAG_OSM2SHP_FLAG_CHECK_INPUTS);
     end
 end
 
@@ -108,6 +114,8 @@ if 0 == flag_max_speed
         % Are there the right number of inputs?
         narginchk(1,MAX_NARGIN);
 
+		% Validate the shapeFileString input that it is a char or string
+		fcn_DebugTools_checkInputsToFunctions(shapeFileString, '_of_char_strings');
     end
 end
 

@@ -8,7 +8,13 @@
 % TO-DO:
 %
 % 2026_01_27 by Aneesh Batchu, abb6486@psu.edu
-% - Update the script to the new format
+% - In script_test_fcn_OSM2SHP_plotSHP
+%   % * Update the script to the new format (Demos, Tests, Fastmode, Bugs)
+% 
+% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_OSM2SHP_plotSHP
+%   % * Add assertion tests for the table output (type, size, and values)
+
 %% Set up the workspace
 
 close all
@@ -45,45 +51,47 @@ shapeFileString = "state_college_roads.shp";
 geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, figNum);
 
 % Assertions
+
+
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
 assert(isequal(class(geospatial_table), 'table'))
 
 
-%% DEMO case: Plotting PA highways  
-
-figNum = 10002;
-titleString = sprintf('DEMO case: Plotting PA highways');
-fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); clf;
-
-% Shape file string of PA highways 
-shapeFileString = "PA_highways.shp";
-
-% Call the function
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, figNum);
-
-% Assertions
-% Make sure plot opened up
-assert(isequal(get(gcf,'Number'),figNum));
-assert(isequal(class(geospatial_table), 'table'))
-
-
-%% DEMO case: Plotting all PA roads
-
-figNum = 10003;
-titleString = sprintf('DEMO case: Plotting all PA roads');
-fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); clf;
-
-% Shape file string of PA highways 
-shapeFileString = "PA_ALL_roads.shp";
-
-% Call the function
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, figNum);
-
-% Assertions
-% Make sure plot opened up
-assert(isequal(get(gcf,'Number'),figNum));
-assert(isequal(class(geospatial_table), 'table'))
+% %% DEMO case: Plotting PA highways  
+% 
+% figNum = 10002;
+% titleString = sprintf('DEMO case: Plotting PA highways');
+% fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+% figure(figNum); clf;
+% 
+% % Shape file string of PA highways 
+% shapeFileString = "PA_highways.shp";
+% 
+% % Call the function
+% geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, figNum);
+% 
+% % Assertions
+% % Make sure plot opened up
+% assert(isequal(get(gcf,'Number'),figNum));
+% assert(isequal(class(geospatial_table), 'table'))
+% 
+% 
+% %% DEMO case: Plotting all PA roads
+% 
+% figNum = 10003;
+% titleString = sprintf('DEMO case: Plotting all PA roads');
+% fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+% figure(figNum); clf;
+% 
+% % Shape file string of PA highways 
+% shapeFileString = "PA_ALL_roads.shp";
+% 
+% % Call the function
+% geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, figNum);
+% 
+% % Assertions
+% % Make sure plot opened up
+% assert(isequal(get(gcf,'Number'),figNum));
+% assert(isequal(class(geospatial_table), 'table'))
 

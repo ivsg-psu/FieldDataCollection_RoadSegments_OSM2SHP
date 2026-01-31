@@ -15,11 +15,28 @@
 % REVISION HISTORY:
 % 
 % 2026_01_27 by Aneesh Batchu, abb6486@psu.edu
-% - wrote the code originally
+% - Wrote the code originally
+% 
+% 2026_01_29 by Sean Brennan, sbrennan@psu.edu
+% - In this main script:
+%   % * Updated install flags to allow full reset option
+%   % * Updated global variables to OSM2SHP instead of LAPS
+%   % * Updated shapefile to use data already in Data folder (not PennDOT)
+%   % * Updated zoom and mapcenter definitions to put image centered on
+%   %   % intersection at Reber
+%
+% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_OSM2SHP_plotSHP
+%   % * fixed global flags from DEBUGTOOLS to OSM2SHP
+%   % * added input checking 
+%   % * added Documents folder
+%   % * shut off demo plotting of PA highways and PA_all_roads (data does
+%   %   % not exist)
 
 % TO-DO:
 % 
-% 2026_01_29 - Aneesh Batchu (abb6486@psu.edu)
+% 2026_01_29 - Aneesh Batchu, abb6486@psu.edu
+% - Add usage of PlotRoad toolbox so that all are compatible
 % - Update README.md with geoplots using multiple geobasemaps
 %   % * Include geobasemaps such as 'satellite' and 'osm_standard'
 %   % * Create separate plots zoomed into specific locations
@@ -48,7 +65,15 @@
 %   % human/computer readable formats
 %   % * Include date, time, and time zone
 %   % * Example: interpret raw timestamp value such as 1761402494
-
+%
+% 2026_01_27 by Aneesh Batchu, abb6486@psu.edu
+% - In script_test_fcn_OSM2SHP_plotSHP
+%   % * Update the script to the new format (Demos, Tests, Fastmode, Bugs)
+% 
+% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_OSM2SHP_plotSHP
+%   % * Add assertion tests for the table output (type, size, and values)
+%   % * Update documentation PPT?
 
 
 
@@ -90,6 +115,10 @@ if 1==0
     fcn_INTERNAL_clearUtilitiesFromPathAndFolders;
 end
 
+if 1==0
+    % Resets all paths to factory default
+    restoredefaultpath;
+end
 
 %% Install dependencies
 % Define a universal resource locator (URL) pointing to the repos of
@@ -124,6 +153,11 @@ if ~exist('flag_OSM2SHP_Folders_Initialized','var')
     % Call the function to do the install
     func_handle(dependencyURLs, dependencySubfolders, (0), (-1));
 
+	% Does LargeData exist?
+	if ~exist(fullfile(pwd,'LargeData'),'dir')
+		mkdir('LargeData');
+	end
+
     % Add this function's folders to the path
     this_project_folders = {...
         'Functions','Data','LargeData'};
@@ -136,8 +170,8 @@ end
 
 %% Set environment flags for input checking in Laps library
 % These are values to set if we want to check inputs or do debugging
-setenv('MATLABFLAG_LAPS_FLAG_CHECK_INPUTS','1');
-setenv('MATLABFLAG_LAPS_FLAG_DO_DEBUG','0');
+setenv('MATLABFLAG_OSM2SHP_FLAG_CHECK_INPUTS','1');
+setenv('MATLABFLAG_OSM2SHP_FLAG_DO_DEBUG','0');
 
 %% Set environment flags that define the ENU origin
 % This sets the "center" of the ENU coordinate system for all plotting
@@ -156,6 +190,10 @@ setenv('MATLABFLAG_PLOTROAD_REFERENCE_ALTITUDE','344.189');
 setenv('MATLABFLAG_PLOTROAD_ALIGNMATLABLLAPLOTTINGIMAGES_LAT','-0.0000008');
 setenv('MATLABFLAG_PLOTROAD_ALIGNMATLABLLAPLOTTINGIMAGES_LON','0.0000054');
 
+%% Test the repo
+if 1==0
+	fcn_DebugTools_testRepoForRelease('_OSM2SHP_');
+end
 %% Start of Demo Code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -181,7 +219,7 @@ figure(figNum);
 clf;
 
 % Shape file string of PA highways 
-shapeFileString = "PA_highways.shp";
+shapeFileString = "state_college_roads.shp";
 
 % Call the function
 geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, figNum);
@@ -201,7 +239,7 @@ temp = gca;
 %  set(temp, 'MapCenter', [40.826378084422814 -77.843653529278654],
 %  'ZoomLevel', 22);  % - Highway
 
-set(temp, 'MapCenter', [40.791630149396873 -77.864521115414732], 'ZoomLevel', 22);  % Intersection between South Atherton and W. College Ave
+set(temp, 'MapCenter', [40.792665826872089 -77.863991325077109], 'ZoomLevel', 19);  % Intersection between South Atherton and W. College Ave
 
 
 
