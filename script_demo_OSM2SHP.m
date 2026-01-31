@@ -35,32 +35,6 @@
 
 % TO-DO:
 % 
-% 2026_01_29 - Aneesh Batchu, abb6486@psu.edu
-% - Add usage of PlotRoad toolbox so that all are compatible
-% - Update README.md with geoplots using multiple geobasemaps
-%   % * Include geobasemaps such as 'satellite' and 'osm_standard'
-%   % * Create separate plots zoomed into specific locations
-%   %   % -- Example: South Atherton Street & W College Avenue
-%   %   % -- Example: I-80
-% - Figure out how to download and cache the underlying basemaps used by
-%   % geoplots for offline or reproducible plotting
-% - Use the PlotRoad repository to plot shapefiles
-%   % * PlotRoad allows easy modification of plotting options
-% - Understand how road segments are defined and stored within shapefiles
-%   % * Enable lookup of specific road segments
-%   % * Allow comparison with external datasets
-%   %   % -- Example: PennDOT data
-%   %   % -- Example: PSU-collected mapping van data (our data)
-% - Determine which road or region to map first
-%   % * Develop a tool to compute RMSE between corresponding road segments
-%   %   % -- For each point on Curve A, compute shortest (perpendicular)
-%   %   %    distance to Curve B
-%   %   % -- Compute RMSE of these distances as a similarity metric
-% - Develop code to zoom into satellite views of roads
-%   % * Extract road geometry features
-%   %   % -- Example: lane markers (solid white, double yellow)
-% - Develop code to plot multiple geobasemaps side-by-side
-%   % * To enable visual comparison between OSM and satellite basemaps
 % - Convert shapefile timestamps stored in geospatial_table into
 %   % human/computer readable formats
 %   % * Include date, time, and time zone
