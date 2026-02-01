@@ -55,6 +55,7 @@ date_time = fcn_OSM2SHP_convertUTCToDatetime(geospatial_table, (figNum));
 
 % Assertions
 assert(isequal(class(date_time), 'datetime'))
+assert(isequal(length(geospatial_table.timestamp(:,1)), length(date_time(:,1))))
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');

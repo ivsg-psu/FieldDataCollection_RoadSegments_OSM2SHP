@@ -32,44 +32,42 @@
 %   % * added Documents folder
 %   % * shut off demo plotting of PA highways and PA_all_roads (data does
 %   %   % not exist)
+% 
+% 2026_02_01 by Aneesh Batchu, abb6486@psu.edu
+% - Wrote a function "fcn_OSM2SHP_convertUTCToDatetime"to convert  
+%   % shapefile timestamps stored in geospatial_table into human/computer  
+%   % readable formats and wrote a script to test the function 
+% - Added "fcn_INTERNAL_checkRequiredLargeDataFiles" to check if an user
+%  % has downloaded all required files
+% - In script_test_fcn_OSM2SHP_plotSHP
+%   % * Update the script to the new format (Demos, Tests, Fastmode, Bugs)
+% - In script_test_fcn_OSM2SHP_plotSHP
+%   % * Added assertion tests for the table output (type, size, and values)
+% - Updated ReadME.md file
 
 % TO-DO:
 % 
-% - Convert shapefile timestamps stored in geospatial_table into
-%   % human/computer readable formats
-%   % * Include date, time, and time zone
-%   % * Example: interpret raw timestamp value such as 1761402494
-%
-% 2026_01_27 by Aneesh Batchu, abb6486@psu.edu
-% - In script_test_fcn_OSM2SHP_plotSHP
-%   % * Update the script to the new format (Demos, Tests, Fastmode, Bugs)
-% 
 % 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In script_test_fcn_OSM2SHP_plotSHP
-%   % * Add assertion tests for the table output (type, size, and values)
 %   % * Update documentation PPT?
 
 
 
-
-%% Instructions to create Data folder
-% 
-% Please unzip "PA_highways.zip" and copy all the files
-% in the unzipped folder to Data folder before running the script
-
-
 %% Instructions to create LargeData folder
 %
-% Create a directory named "LargeData" inside the ExtremaRoadEdge (main) directory.
+% Create a directory named "LargeData" inside the ExtremaRoadEdge (main)
+% directory.
 %
 % Navigate to: OneDrive/IVSG/GitHubMirror/OSM2SHP_data
 % 
-% Download "PA_ALL_roads.zip" and "pennsylvania-260125.osm.pbf"
+% Download "PA_ALL_roads.zip", "PA_highways.zip" and
+% "pennsylvania-260125.osm.pbf"
 % 
-% Copy above two items into LargeData folder
+% Copy above three items into LargeData folder
 % 
-% Unzip "PA_ALL_roads.zip" and copy all the files
-% in the unzipped folder to LargeData folder before running the script
+% Unzip "PA_ALL_roads.zip" and "PA_highways.zip"  
+% 
+% Copy all the files in the unzipped folder to LargeData folder before
+% running the script
 
 
 %% Make sure we are running out of root directory
@@ -168,6 +166,13 @@ setenv('MATLABFLAG_PLOTROAD_ALIGNMATLABLLAPLOTTINGIMAGES_LON','0.0000054');
 if 1==0
 	fcn_DebugTools_testRepoForRelease('_OSM2SHP_');
 end
+
+%% Check if required files exist to run the demo script and script_test_all_functions
+
+% Checks if required files exist
+fcn_INTERNAL_checkRequiredLargeDataFiles
+
+
 %% Start of Demo Code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -207,15 +212,13 @@ geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, figNum);
 
 % geobasemap('osm_standard') % Plots the data (roads) on a OSM standard basemap
 
-geobasemap('satellite') % Options: 'streets-light', 'streets-dark', 'topographic', 'grayland', 'bluegreen', etc.
-temp = gca; 
+% geobasemap('satellite') % Options: 'streets-light', 'streets-dark', 'topographic', 'grayland', 'bluegreen', etc.
+% temp = gca; 
 
 %  set(temp, 'MapCenter', [40.826378084422814 -77.843653529278654],
 %  'ZoomLevel', 22);  % - Highway
 
-set(temp, 'MapCenter', [40.792665826872089 -77.863991325077109], 'ZoomLevel', 19);  % Intersection between South Atherton and W. College Ave
-
-
+% set(temp, 'MapCenter', [40.792665826872089 -77.863991325077109], 'ZoomLevel', 19);  % Intersection between South Atherton and W. College Ave
 
 % Assertions
 % Make sure plot opened up
@@ -270,3 +273,56 @@ if  exist(utilities_dir,'dir')
 end
 
 end % Ends fcn_INTERNAL_clearUtilitiesFromPathAndFolders
+
+
+%% fcn_INTERNAL_checkRequiredLargeDataFiles
+
+function fcn_INTERNAL_checkRequiredLargeDataFiles
+% fcn_INTERNAL_checkRequiredLargeDataFiles
+%
+% Verifies that all required large data files exist directly inside the
+% LargeData directory. 
+%
+% This function is intended to be called before running demo scripts or
+% test suites that depend on external large data files.
+
+% Path of LargeData directory
+largeDataDirectory = fullfile(pwd, 'LargeData');
+
+% Check that LargeData directory exists
+if ~isfolder(largeDataDirectory)
+    error('LargeData folder does not exist at: %s', largeDataDirectory);
+end
+
+fprintf('\nChecking required files in LargeData directory:\n');
+
+% List of required files (directly inside LargeData/)
+requiredFiles = { ...
+    'PA_ALL_roads.cpg', ...
+    'PA_ALL_roads.dbf', ...
+    'PA_ALL_roads.prj', ...
+    'PA_ALL_roads.shp', ...
+    'PA_ALL_roads.shx', ...
+    'PA_highways.cpg', ...
+    'PA_highways.dbf', ...
+    'PA_highways.prj', ...
+    'PA_highways.shp', ...
+    'PA_highways.shx', ...
+    };
+
+% Check each required file
+for nFile = 1:numel(requiredFiles)
+    filePath = fullfile(largeDataDirectory, requiredFiles{nFile});
+
+    if ~isfile(filePath)
+        fprintf('-------------------------------- Read instructions to proceed ------------------------------\n');
+        error('Missing required file: %s', requiredFiles{nFile});
+        
+    else
+        fprintf(' %s\n', requiredFiles{nFile});
+    end
+end
+
+fprintf('\nAll required LargeData files exist.\n');
+
+end % Ends fcn_INTERNAL_checkRequiredLargeDataFiles

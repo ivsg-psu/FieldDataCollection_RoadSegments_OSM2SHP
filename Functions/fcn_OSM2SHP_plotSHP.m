@@ -32,7 +32,6 @@ function geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, varargin)
 %
 % DEPENDENCIES:
 %
-%      readgeotable
 %      fcn_DebugTools_checkInputsToFunctions
 %
 % EXAMPLES:

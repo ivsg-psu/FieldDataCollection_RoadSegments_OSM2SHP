@@ -49,7 +49,7 @@ Search for this, and you will find!
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="structure">Repo Structure</a>
+    <li><a href="#structure">Repo Structure</a>
       <ul>
         <li><a href="#directories">Top-Level Directories</li>
         <li><a href="#dependencies">Dependencies</li>
@@ -57,27 +57,13 @@ Search for this, and you will find!
     </li>
     <li><a href="#functions">Functions</li>
       <ul>
-        <li><a href="#basic-support-functions">Basic Support Functions</li>
-        <ul>
-          <li><a href="#fcn_laps_plotlapsxy">fcn_Laps_plotLapsXY - Plotting utility for lap outputs</li>
-          <li><a href="#fcn_laps_fillsamplelaps">fcn_Laps_fillSampleLaps - Creates test datasets</li>
-          <li><a href="#fcn_laps_plotzonedefinition">fcn_Laps_plotZoneDefinition - Plots zone definitions</li>
-          <li><a href="#fcn_laps_fillsamplelaps">fcn_Laps_fillSampleLaps - Creates test datasets</li>
-        </ul>
-        <li><a href="#core-functions">Core Functions</li>
-        <ul>
-          <li><a href="#fcn_laps_breakdataintolaps">fcn_Laps_breakDataIntoLaps - Core function of the repo, breaks data into laps</li>
-          <li><a href="#fcn_laps_checkzonetype">fcn_Laps_checkZoneType - Checks inputs to determine if zone is a point or line segment type</li>
-          <li><a href="#fcn_laps_breakdataintolapindices">fcn_Laps_breakDataIntoLapIndices - A more advanced version of fcn_Laps_breakDataIntoLaps, where the outputs are the indices that apply to each lap.</li>
-          <li><a href="#fcn_laps_findsegmentzonestartstop">fcn_Laps_findSegmentZoneStartStop - Supporting function that finds the portions of a path that meet a segment zone criteria</li>
-          <li><a href="#fcn_laps_findpointzonestartstopandminimum">fcn_Laps_findPointZoneStartStopAndMinimum - Supporting function that finds the portions of a path that meet a point zone criteria</li>
-        </ul>
+        <li><a href="#fcn_osm2shp_plotshp">fcn_OSM2SHP_plotSHP</li>
+        <li><a href="#fcn_osm2shp_convertutctodatetime">fcn_OSM2SHP_convertUTCToDatetime</li>
       </ul>
     <li><a href="#usage">Usage</a></li>
      <ul>
      <li><a href="#general-usage">General Usage</li>
      <li><a href="#examples">Examples</li>
-     <li><a href="#definition-of-endpoints">Definition of Endpoints</li>
      </ul>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -120,6 +106,7 @@ To get a local copy up and running follow these simple steps.
 
 ***
 
+## Structure
 <!-- STRUCTURE OF THE REPO -->
 ### Directories
 
@@ -130,7 +117,7 @@ The following are the top level directories within the repository:
  <li>/Utilities folder: Dependencies that are utilized but not implemented in this repository are placed in the Utilities directory. These can be single files but are most often folders containing other cloned repositories.</li>
 </ul>
 
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
+<a href="#fielddatacollection_roadsegments_osm2shp">Back to top</a>
 
 ***
 
@@ -138,145 +125,45 @@ The following are the top level directories within the repository:
 
 * [Errata_Tutorials_DebugTools](https://github.com/ivsg-psu/Errata_Tutorials_DebugTools) - The DebugTools repo is used for the initial automated folder setup, and for input checking and general debugging calls within subfunctions. The repo can be found at: <https://github.com/ivsg-psu/Errata_Tutorials_DebugTools>
 
-* [PathPlanning_PathTools_PathClassLibrary](https://github.com/ivsg-psu/PathPlanning_PathTools_PathClassLibrary) - the PathClassLibrary contains tools used to find intersections of the data with particular line segments, which is used to find start/end/excursion locations in the functions. The repo can be found at: <https://github.com/ivsg-psu/PathPlanning_PathTools_PathClassLibrary>
-
-    Each should be installed in a folder called "Utilities" under the root folder, namely ./Utilities/DebugTools/ , ./Utilities/PathClassLibrary/ . If you wish to put these codes in different directories, the main call stack in script_demo_(reponame) can be easily modified with strings specifying the different location, but the user will have to make these edits directly.
-
-    For ease of getting started, the zip files of the directories used - without the .git repo information, to keep them small - are included in this repo.
-
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
+<a href="#fielddatacollection_roadsegments_osm2shp">Back to top</a>
 
 ***
 
 <!-- FUNCTION DEFINITIONS -->
 ## Functions
 
-### Basic Support Functions
+### fcn_OSM2SHP_plotSHP
 
-#### fcn_Laps_plotLapsXY
+This function takes a shape file as the input and generates a geospatial
+table containing OpenStreetMap (OSM) road features, where each row
+represents a single road segment and columns store its geometry (Shape)
+and associated attributes such as road class, access restrictions, lane
+count, speed limit, and naming information. The function also plots all
+road segments contained in the shapefile.
 
-The function fcn_Laps_plotLapsXY plots the laps. For example, the function was used to make the plot below of the last Sample laps.
 <pre align="center">
-  <img src=".\Images\fcn_Laps_plotLapsXY.png" alt="fcn_Laps_plotLapsXY picture" width="400" height="300">
-  <figcaption>Fig.1 - The function fcn_Laps_plotLapsXY plots the lap outputs.</figcaption>
+  <img src=".\Images\fcn_OSM2SHP_plotSHP_1.jpg" alt="fcn_OSM2SHP_plotSHP picture" width="500" height="400">
+  <figcaption>Fig.1 - Highways passing through State College </figcaption>
   <!--font size="-2">Photo by <a href="https://unsplash.com/ko/@samuelchenard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Samuel Chenard</a> on <a href="https://unsplash.com/photos/Bdc8uzY9EPw?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></font -->
 </pre>
 
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
-
-***
-
-#### fcn_Laps_fillSampleLaps
-
-The function fcn_Laps_fillSampleLaps creates dummy data to test lap functions. The test laps are in general difficult situations, including scenarios where laps loop back onto themself and/or with separate looping structures. These challenges show that the library can work on varying and complicated data sets. NOTE: within this function, commented out typically, there is code to allow users to draw their own lap test cases.
-
 <pre align="center">
-  <img src=".\Images\fcn_Laps_fillSampleLaps.png" alt="fcn_Laps_fillSampleLaps picture" width="400" height="300">
-  <figcaption>Fig.2 - The function fcn_Laps_fillSampleLaps creates test data sets for exercising lap functions.</figcaption>
+  <img src=".\Images\fcn_OSM2SHP_plotSHP_2.jpg" alt="fcn_OSM2SHP_plotSHP picture" width="500" height="400">
+  <figcaption>Fig.2 - Highways passing through Pennsylvania </figcaption>
   <!--font size="-2">Photo by <a href="https://unsplash.com/ko/@samuelchenard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Samuel Chenard</a> on <a href="https://unsplash.com/photos/Bdc8uzY9EPw?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></font -->
 </pre>
 
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
 
-***
+<a href="#fielddatacollection_roadsegments_osm2shp">Back to top</a>
 
-#### fcn_Laps_plotZoneDefinition
+### fcn_OSM2SHP_convertUTCToDatetime
 
-The function fcn_Laps_plotZoneDefinition plots any type of zone, allowing user-defined colors. For example, the figure below shows a radial zone for the start, and a line segment for the end. For the line segment, an arrow is given that indicates which direction the segment must be crossed in order for the condition to be counted.
+This function takes a geospatial table as input and converts the
+timestamp from POSIX time (seconds since 00:00:00 UTC on 1 January 1970)
+into a datetime format (day–month–year hour:minute:second).
 
-<pre align="center">
-  <img src=".\Images\fcn_Laps_plotZoneDefinition.png" alt="fcn_Laps_plotZoneDefinition picture" width="400" height="300">
-  <figcaption>Fig.3 - The function fcn_Laps_plotZoneDefinition plots the zone definitions.</figcaption>
-  <!--font size="-2">Photo by <a href="https://unsplash.com/ko/@samuelchenard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Samuel Chenard</a> on <a href="https://unsplash.com/photos/Bdc8uzY9EPw?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></font -->
-</pre>
 
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
-
-***
-
-#### fcn_Laps_plotSegmentZoneDefinition
-
-The function fcn_Laps_plotSegmentZoneDefinition plots a segment zone, allowing user-defined colors. This function is mostly used to support fcn_Laps_plotZoneDefinition.m.
-
-<!--pre align="center">
-  <img src=".\Images\fcn_Laps_plotZoneDefinition.png" alt="fcn_Laps_plotZoneDefinition picture" width="400" height="300">
-  <figcaption>Fig.3 - The function fcn_Laps_plotZoneDefinition plots the zone definitions.</figcaption>
-  <!--font size="-2">Photo by <a href="https://unsplash.com/ko/@samuelchenard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Samuel Chenard</a> on <a href="https://unsplash.com/photos/Bdc8uzY9EPw?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></font>
-</pre -->
-
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
-
-***
-
-### Core Functions
-
-#### fcn_Laps_breakDataIntoLaps
-
-The function fcn_Laps_breakDataIntoLaps is the core function for this repo that breaks data into laps. Note: the example shown below uses radial zone definitions, and the results illustrate how a lap, when it is within a start zone, starts at the FIRST point within a start zone. Similarly, each lap ends at the LAST point before exiting the end zone definition. The input data is a traversal type for this particular function.
-
-<pre align="center">
-  <img src=".\Images\fcn_Laps_breakDataIntoLaps.png" alt="fcn_Laps_breakDataIntoLaps picture" width="400" height="300">
-  <figcaption>Fig.4 - The function fcn_Laps_breakDataIntoLaps is the core function in the repo, and breaks data into laps.</figcaption>
-  <!--font size="-2">Photo by <a href="https://unsplash.com/ko/@samuelchenard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Samuel Chenard</a> on <a href="https://unsplash.com/photos/Bdc8uzY9EPw?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></font -->
-</pre>
-
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
-
-***
-
-#### fcn_Laps_checkZoneType
-
-The function fcn_Laps_checkZoneType supports fcn_Laps_breakDataIntoLaps by checking if the zone definition inputs are either a point or line segment zone specification.
-
-<!--pre align="center">
-  <img src=".\Images\fcn_Laps_breakDataIntoLaps.png" alt="fcn_Laps_breakDataIntoLaps picture" width="400" height="300">
-  <figcaption>Fig.5 - The function fcn_Laps_checkZoneType checks inputs to determine if zones are point or line segment type.</figcaption>
-  <!--font size="-2">Photo by <a href="https://unsplash.com/ko/@samuelchenard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Samuel Chenard</a> on <a href="https://unsplash.com/photos/Bdc8uzY9EPw?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></font>
-</pre-->
-
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
-
-***
-
-#### fcn_Laps_breakDataIntoLapIndices
-
-The function fcn_Laps_breakDataIntoLapIndices is a more advanced version of fcn_Laps_breakDataIntoLaps, where the outputs are the indices that apply to each lap. The input type is also easier to use, a "path" type which is just an array of [X Y]. The example here shows the use of a segment type zone for the start zone, a point-radius type zone for the end zone. The results of this function are the row indices of the data. The plot below illustrates that the function returns 3 laps in this example, and as well returns the pre-lap and post-lap data. One can observe that it is common that the prelap data for one lap (Lap 2) consists of the post-lap data for the prior lap (Lap 1).
-
-<pre align="center">
-  <img src=".\Images\fcn_Laps_breakDataIntoLapIndices.png" alt="fcn_Laps_breakDataIntoLapIndices picture" width="600" height="300">
-  <figcaption>Fig.5 - The function fcn_Laps_breakDataIntoLapIndices is a more advanced version of fcn_Laps_breakDataIntoLaps, where the outputs are the indices that apply to each lap.</figcaption>
-  <!--font size="-2">Photo by <a href="https://unsplash.com/ko/@samuelchenard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Samuel Chenard</a> on <a href="https://unsplash.com/photos/Bdc8uzY9EPw?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></font -->
-</pre>
-
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
-
-***
-
-#### fcn_Laps_findSegmentZoneStartStop
-
-The function fcn_Laps_findSegmentZoneStartStop is a supporting function that finds the portions of a path that meet a segment zone criteria, returning the starting/ending indices for every crossing of a segment zone. The crossing must cross in the correct direction, and a segment is considered crossed if either the start or end of segment lie on the segment line. This is illustrated in the challenging example shown below, where the input path (thin blue) starts at the top, and then zig-zags repeatedly over a segment definition (green). For each time the blue line crosses the line segment, that portion of the path is saved as a separate possible crossing and thus, for this example, there are 5 possible crossings.
-
-<pre align="center">
-  <img src=".\Images\fcn_Laps_findSegmentZoneStartStop.png" alt="fcn_Laps_findSegmentZoneStartStop picture" width="400" height="300">
-  <figcaption>Fig.5 - The function fcn_Laps_findSegmentZoneStartStop is a supporting function that finds the portions of a path that meet a segment zone criteria, returning the starting/ending indices for every crossing of a segment zone.</figcaption>
-  <!--font size="-2">Photo by <a href="https://unsplash.com/ko/@samuelchenard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Samuel Chenard</a> on <a href="https://unsplash.com/photos/Bdc8uzY9EPw?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></font -->
-</pre>
-
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
-
-***
-
-#### fcn_Laps_findPointZoneStartStopAndMinimum
-
-The function fcn_Laps_findPointZoneStartStopAndMinimum is a supporting function that finds the portions of a path that meet a point zone criteria, returning the starting/ending indices for every crossing of a point zone. Note that a minimum number of points must be within the zone for it to be considered activated, which is useful for real-world data (such as GPS recordings) where noise may randomly push one point of a path randomly into a zone, and then jump out. This number of points threshold can be user-defined. In the example below, the threshold is 4 points and one can see that, for a path that crosses over the zone three times, that two of the crossings are found to meet the 4-point criteria.
-
-<pre align="center">
-  <img src=".\Images\fcn_Laps_findPointZoneStartStopAndMinimum.png" alt="fcn_Laps_findPointZoneStartStopAndMinimum picture" width="400" height="300">
-  <figcaption>Fig.6 - The function fcn_Laps_findPointZoneStartStopAndMinimum is a supporting function that finds the portions of a path that meet a point zone criteria, returning the starting/ending indices for every crossing of a point zone.</figcaption>
-  <!--font size="-2">Photo by <a href="https://unsplash.com/ko/@samuelchenard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Samuel Chenard</a> on <a href="https://unsplash.com/photos/Bdc8uzY9EPw?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></font -->
-</pre>
-
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
+<a href="#fielddatacollection_roadsegments_osm2shp">Back to top</a>
 
 ***
 
@@ -304,7 +191,7 @@ help fcn_fcnname
 
 for any function to view function details.
 
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
+<a href="#fielddatacollection_roadsegments_osm2shp">Back to top</a>
 
 ***
 
@@ -313,50 +200,14 @@ for any function to view function details.
 1. Run the main script to set up the workspace and demonstrate main outputs, including the figures included here:
 
    ```sh
-   script_demo_Laps
+   script_demo_OSM2SHP
    ```
 
     This exercises the main function of this code.
 
 2. After running the main script to define the included directories for utility functions, one can then navigate to the Functions directory and run any of the functions or scripts there as well. All functions for this library are found in the Functions sub-folder, and each has an associated test script. Run any of the various test scripts; each can work as a stand-alone script.
 
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
-
-***
-
-### Definition of Endpoints
-
-The codeset uses two types of zone definitions:
-
-1. A point location defined by the center and radius of the zone, and number of points that must be within this zone. An example of this would be "travel from home" or "to grandma's house". The point "zone" specification is given by an X,Y center location and a radius in the form of [X Y radius], as a 3x1 matrix. Whenever the path passes within the radius with a specified number of points within that radius, the minimum distance point then "triggers" the zone.
-
-    <img src=".\Images\point_zone_definition.png" alt="point_zone_definition picture" width="200" height="200">
-
-2. A line segment. An example is the start line or finish line of a race. A runner has not started or ended the race without crossing these lines. For line segment conditions, the inputs are condition formatted as: [X_start Y_start; X_end Y_end] wherein start denotes the starting coordinate of the line segment, end denotes the ending coordinate of the line segment. The direction of start/end lines of the segment are defined such that a correct crossing of the line is in the positive cross-product direction defined from the vector from start to end of the segment.
-
-    <img src=".\Images\linesegment_zone_definition.png" alt="linesegment_zone_definition picture" width="200" height="200">
-
-These two conditions can be mixed and matched, so that one could, for example, find every lap of data where someone went from a race start line (defined by a line segment) to a specific mountain peak defined by a point and radius.
-
-The two zone types above can be used to define three types of conditions:
-
-1. A start condition - where a lap starts. The lap does not end until and end condition is met.
-2. An end condition - where a lap ends. The lap cannot end until this condition is met.
-3. An excursion condition (optional) - a condition that must be met after the start point, and before the end point. The excursion condition must be met before the end point is counted.
-
-Why is an excursion point needed? Consider an example: it is common for the start line of a marathon to be quite close to the start line, sometimes even just a few hundred feet after the start line. This setup is for the practical reason that runners do not want to make long walks to/from starting locations to finish location either before, and definitely not after, such a race. As a consequence, it is common that, immediately after the start of the race, a runner will cross the finish line before actually finishing the race. This happens in field data collection when one accidentally passes a start/end station, and then backs up the vehicle to reset. In using these data recordings, we would not want these small segment to count as a complete laps, for example the 100-ish meter distance to be counted as a marathon run. Rather, one would require that the recorded data enter some excursion zone far away from the starting line for such a "lap" to count. Thus, this laps code allows one to define an excursion point as a location far out into the course that one must "hit" before the finish line is counted as the actual "finish" of the lap.
-
-* For each lap when there are repeats, the resulting laps of data include the lead-in and fade-out data, namely the datapoint immediately before the start condition was met, and the datapoint after the end condition is met. THIS CREATES REPLICATE DATA. However, this allows better merging of data for repeated laps, for example averaging data exactly from start to finish, or to more exactly calculate velocities on entry and exit of a lap by using windowed averages or filters.
-
-* Points inside the lap can be set for the point-type zones. These occur as optional input arguments in fcn_Laps_findPointZoneStartStopAndMinimum and in the core definition of a point zone as the 2nd argument. For example, the following code:
-
-  ```Matlab
-  start_definition = [10 3 0 0]; % Radius 10, 3 points must pass near [0 0]
-  ```
-
-  requires 3 points to occur within the start zone area.
-
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
+<a href="#fielddatacollection_roadsegments_osm2shp">Back to top</a>
 
 ***
 
@@ -365,7 +216,7 @@ Why is an excursion point needed? Consider an example: it is common for the star
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
+<a href="#fielddatacollection_roadsegments_osm2shp">Back to top</a>
 
 ***
 
@@ -373,7 +224,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 This code is still in development (alpha testing)
 
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
+<a href="#fielddatacollection_roadsegments_osm2shp">Back to top</a>
 
 ***
 
@@ -382,9 +233,11 @@ This code is still in development (alpha testing)
 
 Sean Brennan - [sbrennan@psu.edu](sbrennan@psu.edu)
 
-Project Link: [hhttps://github.com/ivsg-psu/FeatureExtraction_DataClean_BreakDataIntoLaps](https://github.com/ivsg-psu/FeatureExtraction_DataClean_BreakDataIntoLaps)
+Aneesh Batchu - [abb6486@psu.edu](abb6486@psu.edu)
 
-<a href="#featureextraction_dataclean_breakdataintolaps">Back to top</a>
+Project Link: [hhttps://github.com/ivsg-psu/FieldDataCollection_RoadSegments_OSM2SHP](https://github.com/ivsg-psu/FieldDataCollection_RoadSegments_OSM2SHP)
+
+<a href="#fielddatacollection_roadsegments_osm2shp">Back to top</a>
 
 ***
 

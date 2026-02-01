@@ -1,5 +1,5 @@
 function date_time = fcn_OSM2SHP_convertUTCToDatetime(geospatialTable, varargin)
-%% fcn_OSM2SHP_plotSHP
+%% fcn_OSM2SHP_convertUTCToDatetime
 % 
 % This function takes a geospatial table as input and converts the
 % timestamp from POSIX time (seconds since 00:00:00 UTC on 1 January 1970)
@@ -134,7 +134,7 @@ end
 % Timestamp of the OSM roads in UTC format
 time_stamp = geospatialTable.timestamp;
 
-% Convert POSIX time (Unix or Epoch) time into date time format
+% Convert POSIX time (aka Unix or Epoch) time into date time format
 date_time = datetime(time_stamp, 'ConvertFrom', 'posixtime', 'TimeZone', 'UTC');
 
 
