@@ -47,6 +47,13 @@
 % 
 % 2026_02_02 by Aneesh Batchu, abb6486@psu.edu
 % - Renamed "fcn_OSM2SHP_plotSHP" to "fcn_OSM2SHP_loadShapeFile"
+%
+% - In this main demo code:
+%   % * Fixed fcn_INTERNAL_checkRequiredLargeDataFiles to find files even
+%   %   % if not installed in root of LargeData, for example if installed in
+%   %   % subfolders of the same folder or within the Data folder.
+%   % * Fixed fprintf statements to include correct designator for terminal
+%   %   % so that it is now: fprintf(1,"Stuff...");
 
 % TO-DO:
 % 
@@ -297,7 +304,7 @@ if ~isfolder(largeDataDirectory)
     error('LargeData folder does not exist at: %s', largeDataDirectory);
 end
 
-fprintf('\nChecking required files in LargeData directory:\n');
+fprintf(1,'\nChecking required files in LargeData directory:\n');
 
 % List of required files (directly inside LargeData/)
 requiredFiles = { ...
@@ -315,17 +322,20 @@ requiredFiles = { ...
 
 % Check each required file
 for nFile = 1:numel(requiredFiles)
-    filePath = fullfile(largeDataDirectory, requiredFiles{nFile});
-
-    if ~isfile(filePath)
-        fprintf('-------------------------------- Read instructions to proceed ------------------------------\n');
+    fileName = requiredFiles{nFile};
+    
+    % OLD --> doesn't work unless install is in EXACTLY right location:  
+    % filePath = fullfile(largeDataDirectory, fileName);
+    % if ~isfile(filePath)
+    if ~exist(fileName,'file')==2
+        fprintf(1,'-------------------------------- Read instructions to proceed ------------------------------\n');
         error('Missing required file: %s', requiredFiles{nFile});
         
     else
-        fprintf(' %s\n', requiredFiles{nFile});
+        fprintf(1, ' Found required file: %s\n', requiredFiles{nFile});
     end
 end
 
-fprintf('\nAll required LargeData files exist.\n');
+fprintf(1, '\nAll required LargeData files exist.\n');
 
 end % Ends fcn_INTERNAL_checkRequiredLargeDataFiles
