@@ -231,9 +231,14 @@ geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, figNum);
 % set(temp, 'MapCenter', [40.792665826872089 -77.863991325077109], 'ZoomLevel', 19);  % Intersection between South Atherton and W. College Ave
 
 % Assertions
+assert(isequal(class(geospatial_table), 'table'))
+assert(isequal(size(geospatial_table), [7130,29]))
+
+requiredVars = ["Shape","highway","id","timestamp","length"];
+assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
+
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
-assert(isequal(class(geospatial_table), 'table'))
 
 %% Functions follow
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
