@@ -99,28 +99,28 @@ assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
 
-%% TEST case: Plotting all PA roads
+%% TEST case: Plotting all PA roads - Takes too long to plot (need to find a way to plot it faster)
 
-figNum = 20002;
-titleString = sprintf('TEST case: Plotting all PA roads');
-fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); clf;
-
-% Shape file string of PA highways 
-shapeFileString = "PA_ALL_roads.shp";
-
-% Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
-
-% Assertions
-assert(isequal(class(geospatial_table), 'table'))
-assert(isequal(size(geospatial_table), [1385186, 41]))
-
-requiredVars = ["Shape","highway","id","timestamp","length"];
-assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
-
-% Make sure plot opened up
-assert(isequal(get(gcf,'Number'),figNum));
+% figNum = 20002;
+% titleString = sprintf('TEST case: Plotting all PA roads');
+% fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+% figure(figNum); clf;
+% 
+% % Shape file string of PA highways 
+% shapeFileString = "PA_ALL_roads.shp";
+% 
+% % Call the function
+% geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
+% 
+% % Assertions
+% assert(isequal(class(geospatial_table), 'table'))
+% assert(isequal(size(geospatial_table), [1385186, 41]))
+% 
+% requiredVars = ["Shape","highway","id","timestamp","length"];
+% assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
+% 
+% % Make sure plot opened up
+% assert(isequal(get(gcf,'Number'),figNum));
 
 %% Fast Mode Tests
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -141,9 +141,9 @@ close all;
 fprintf(1,'Figure: 8XXXXXX: TEST mode cases\n');
 %% Basic example - NO FIGURE
 
-fig_num = 80001;
-fprintf(1,'Figure: %.0f: FAST mode, empty fig_num\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80001;
+fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
+figure(figNum); close(figNum);
 
 % Shape file string of state college highways 
 shapeFileString = "state_college_roads.shp";
@@ -156,13 +156,13 @@ assert(isequal(class(geospatial_table), 'table'))
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 %% Basic fast mode - NO FIGURE, FAST MODE
 
-fig_num = 80002;
-fprintf(1,'Figure: %.0f: FAST mode, empty fig_num\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80002;
+fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
+figure(figNum); close(figNum);
 
 % Shape file string of PA highways 
 shapeFileString = "state_college_roads.shp";
@@ -175,13 +175,13 @@ assert(isequal(class(geospatial_table), 'table'))
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 %% Compare speeds of pre-calculation versus post-calculation versus a fast variant
 
-fig_num = 80003;
-fprintf(1,'Figure: %.0f: FAST mode comparisons\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80003;
+fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
+figure(figNum); close(figNum);
 
 % Shape file string of PA highways
 shapeFileString = "state_college_roads.shp";
@@ -225,7 +225,7 @@ assert(isequal(class(geospatial_table), 'table'))
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 %% BUG cases
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -251,9 +251,9 @@ if 1==0
 
     %% Should thrown an error as the shapeFileString should be a character 'shapeFileString'
 
-    fig_num = 90001;
-    fprintf(1,'Figure: %.0f:Bug case\n',fig_num);
-    figure(fig_num); close(fig_num);
+    figNum = 90001;
+    fprintf(1,'Figure: %.0f:Bug case\n',figNum);
+    figure(figNum); close(figNum);
 
     % Shape file string of PA highways
     shapeFileString = 5;

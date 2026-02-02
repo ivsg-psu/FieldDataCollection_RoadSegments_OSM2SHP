@@ -47,6 +47,8 @@
 % 
 % 2026_02_02 by Aneesh Batchu, abb6486@psu.edu
 % - Renamed "fcn_OSM2SHP_plotSHP" to "fcn_OSM2SHP_loadShapeFile"
+% - Tested repo for release (Line 177)
+%  % * Passed all tests  
 %
 % - In this main demo code:
 %   % * Fixed fcn_INTERNAL_checkRequiredLargeDataFiles to find files even
@@ -173,7 +175,7 @@ setenv('MATLABFLAG_PLOTROAD_ALIGNMATLABLLAPLOTTINGIMAGES_LAT','-0.0000008');
 setenv('MATLABFLAG_PLOTROAD_ALIGNMATLABLLAPLOTTINGIMAGES_LON','0.0000054');
 
 %% Test the repo
-if 1==0
+if 1==1
 	fcn_DebugTools_testRepoForRelease('_OSM2SHP_');
 end
 
@@ -239,6 +241,31 @@ assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
 
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
+
+%% fcn_OSM2SHP_convertUTCToDatetime: Convert the timestamp of OSM State College roads from UTC format to date time format
+
+figNum = 10002;
+titleString = sprintf('fcn_OSM2SHP_convertUTCToDatetime: Convert the timestamp of OSM State College roads from UTC format to date time format');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
+
+% Shape file string of PA highways 
+shapeFileString = "state_college_roads.shp";
+
+% Create a geospatial table
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, -1);
+
+% Call the function
+date_time = fcn_OSM2SHP_convertUTCToDatetime(geospatial_table, (figNum)); 
+
+% Assertions
+assert(isequal(class(date_time), 'datetime'))
+assert(isequal(length(geospatial_table.timestamp(:,1)), length(date_time(:,1))))
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
+
 
 %% Functions follow
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

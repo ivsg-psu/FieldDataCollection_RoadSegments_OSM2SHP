@@ -41,7 +41,7 @@ figure(figNum); close(figNum);
 shapeFileString = "state_college_roads.shp";
 
 % Create a geospatial table
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, -1);
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, -1);
 
 % Call the function
 date_time = fcn_OSM2SHP_convertUTCToDatetime(geospatial_table, (figNum)); 
@@ -85,7 +85,7 @@ figure(figNum); close(figNum);
 shapeFileString = "PA_highways.shp";
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, (-1));
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (-1));
 
 % Call the function
 date_time = fcn_OSM2SHP_convertUTCToDatetime(geospatial_table, (figNum)); 
@@ -117,15 +117,15 @@ close all;
 fprintf(1,'Figure: 8XXXXXX: TEST mode cases\n');
 %% Basic example - NO FIGURE
 
-fig_num = 80001;
-fprintf(1,'Figure: %.0f: FAST mode, empty fig_num\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80001;
+fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
+figure(figNum); close(figNum);
 
 % Shape file string of PA highways 
 shapeFileString = "state_college_roads.shp";
 
 % Create a geospatial table
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, -1);
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, -1);
 
 % Call the function
 date_time = fcn_OSM2SHP_convertUTCToDatetime(geospatial_table, ([]));
@@ -136,19 +136,19 @@ assert(isequal(length(geospatial_table.timestamp(:,1)), length(date_time(:,1))))
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 %% Basic fast mode - NO FIGURE, FAST MODE
 
-fig_num = 80002;
-fprintf(1,'Figure: %.0f: FAST mode, empty fig_num\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80002;
+fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
+figure(figNum); close(figNum);
 
 % Shape file string of PA highways 
 shapeFileString = "state_college_roads.shp";
 
 % Create a geospatial table
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, -1);
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, -1);
 
 % Call the function
 date_time = fcn_OSM2SHP_convertUTCToDatetime(geospatial_table, (-1));
@@ -159,19 +159,19 @@ assert(isequal(length(geospatial_table.timestamp(:,1)), length(date_time(:,1))))
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 %% Compare speeds of pre-calculation versus post-calculation versus a fast variant
 
-fig_num = 80003;
-fprintf(1,'Figure: %.0f: FAST mode comparisons\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80003;
+fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
+figure(figNum); close(figNum);
 
 % Shape file string of PA highways 
 shapeFileString = "state_college_roads.shp";
 
 % Create a geospatial table
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, -1);
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, -1);
 
 Niterations = 10;
 
@@ -213,7 +213,7 @@ assert(isequal(length(geospatial_table.timestamp(:,1)), length(date_time(:,1))))
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 %% BUG cases
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -239,9 +239,9 @@ if 1==0
 
     %% Should thrown an error as the shapeFileString should be a character 'shapeFileString'
 
-    fig_num = 90001;
-    fprintf(1,'Figure: %.0f:Bug case\n',fig_num);
-    figure(fig_num); close(fig_num);
+    figNum = 90001;
+    fprintf(1,'Figure: %.0f:Bug case\n',figNum);
+    figure(figNum); close(figNum);
 
 end
 
