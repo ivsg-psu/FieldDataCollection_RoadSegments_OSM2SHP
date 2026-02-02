@@ -1,12 +1,12 @@
-function geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, varargin)
-%% fcn_OSM2SHP_plotSHP
+function geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, varargin)
+%% fcn_OSM2SHP_loadShapeFile
 % 
-% This function takes a shape file as the input and generates a geospatial
-% table containing OpenStreetMap (OSM) road features, where each row
-% represents a single road segment and columns store its geometry (Shape)
-% and associated attributes such as road class, access restrictions, lane
-% count, speed limit, and naming information. The function also plots all
-% road segments contained in the shapefile.
+% This function takes a shape file as the input and loads a shape file to
+% generate a geospatial table containing OpenStreetMap (OSM) road features,
+% where each row represents a single road segment and columns store its
+% geometry (Shape) and associated attributes such as road class, access
+% restrictions, lane count, speed limit, and naming information. The
+% function also plots all road segments contained in the shapefile.
 % 
 % FORMAT:
 %
@@ -38,7 +38,7 @@ function geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, varargin)
 %
 %       See the script:
 %
-%       script_test_fcn_OSM2SHP_plotSHP.m 
+%       script_test_fcn_OSM2SHP_loadShapeFile.m 
 %
 %       for a full test suite.
 %
@@ -52,15 +52,18 @@ function geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, varargin)
 % - wrote the code originally
 %
 % 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_OSM2SHP_plotSHP
+% - In fcn_OSM2SHP_loadShapeFile
 %   % * fixed global flags from DEBUGTOOLS to OSM2SHP
 %   % * added input checking 
+% 
+% 2026_02_02 by Aneesh Batchu, abb6486@psu.edu
+% - Renamed the funtion to "fcn_OSM2SHP_loadShapeFile"
 
 % TO-DO:
 %
 % 2026_01_27 by Aneesh Batchu, abb6486@psu.edu
 % - Give plotFormat as an optional input
-% - Add debugTools to check the input
+
 
 %% Debugging and Input checks
 

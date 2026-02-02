@@ -1,4 +1,4 @@
-%% script_test_fcn_OSM2SHP_plotSHP
+%% script_test_fcn_OSM2SHP_loadShapeFile
 
 % REVISION HISTORY:
 %
@@ -6,9 +6,9 @@
 % - wrote the code originally
 % 
 % 2026_02_01 by Aneesh Batchu, abb6486@psu.edu
-% - In script_test_fcn_OSM2SHP_plotSHP
+% - In script_test_fcn_OSM2SHP_loadShapeFile
 %   % * Update the script to the new format (Demos, Tests, Fastmode, Bugs)
-% - In script_test_fcn_OSM2SHP_plotSHP
+% - In script_test_fcn_OSM2SHP_loadShapeFile
 %   % * Added assertion tests for the table output (type, size, and values)
 
 
@@ -45,7 +45,7 @@ figure(figNum); clf;
 shapeFileString = "state_college_roads.shp";
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, (figNum));
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
 
 % Assertions
 assert(isequal(class(geospatial_table), 'table'))
@@ -87,7 +87,7 @@ figure(figNum); clf;
 shapeFileString = "PA_highways.shp";
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, (figNum));
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
 
 % Assertions
 assert(isequal(class(geospatial_table), 'table'))
@@ -110,7 +110,7 @@ figure(figNum); clf;
 shapeFileString = "PA_ALL_roads.shp";
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, (figNum));
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
 
 % Assertions
 assert(isequal(class(geospatial_table), 'table'))
@@ -149,7 +149,7 @@ figure(fig_num); close(fig_num);
 shapeFileString = "state_college_roads.shp";
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, ([]));
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, ([]));
 
 % Assertions
 assert(isequal(class(geospatial_table), 'table'))
@@ -168,7 +168,7 @@ figure(fig_num); close(fig_num);
 shapeFileString = "state_college_roads.shp";
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, (-1));
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (-1));
 
 % Assertions
 assert(isequal(class(geospatial_table), 'table'))
@@ -193,7 +193,7 @@ tic;
 for ith_test = 1:Niterations
 
     % Call the function
-    geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, ([]));
+    geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, ([]));
 
 end
 slow_method = toc;
@@ -204,7 +204,7 @@ tic;
 for ith_test = 1:Niterations
 
     % Call the function
-    geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, (-1));
+    geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (-1));
 
 end
 fast_method = toc;
@@ -259,7 +259,7 @@ if 1==0
     shapeFileString = 5;
 
     % Call the function
-    geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, (figNum));
+    geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
 
     % Assertions
     assert(isequal(class(geospatial_table), 'table'))

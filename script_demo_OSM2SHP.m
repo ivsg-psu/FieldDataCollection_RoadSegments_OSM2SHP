@@ -26,7 +26,7 @@
 %   %   % intersection at Reber
 %
 % 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_OSM2SHP_plotSHP
+% - In fcn_OSM2SHP_loadShapeFile
 %   % * fixed global flags from DEBUGTOOLS to OSM2SHP
 %   % * added input checking 
 %   % * added Documents folder
@@ -39,11 +39,14 @@
 %   % readable formats and wrote a script to test the function 
 % - Added "fcn_INTERNAL_checkRequiredLargeDataFiles" to check if an user
 %  % has downloaded all required files
-% - In script_test_fcn_OSM2SHP_plotSHP
+% - In script_test_fcn_OSM2SHP_loadShapeFile
 %   % * Update the script to the new format (Demos, Tests, Fastmode, Bugs)
-% - In script_test_fcn_OSM2SHP_plotSHP
+% - In script_test_fcn_OSM2SHP_loadShapeFile
 %   % * Added assertion tests for the table output (type, size, and values)
 % - Updated ReadME.md file
+% 
+% 2026_02_02 by Aneesh Batchu, abb6486@psu.edu
+% - Renamed "fcn_OSM2SHP_plotSHP" to "fcn_OSM2SHP_loadShapeFile"
 
 % TO-DO:
 % 
@@ -189,10 +192,10 @@ fcn_INTERNAL_checkRequiredLargeDataFiles
 
 disp('Welcome to the demo code for the OSM2SHP library! Please read the Instructions')
 
-%% fcn_OSM2SHP_plotSHP: Plots the roads in the shape file
+%% fcn_OSM2SHP_loadShapeFile: Plots the roads in the shape file
 
 figNum = 10001;
-titleString = sprintf('fcn_OSM2SHP_plotSHP: Plots the roads in the shape file');
+titleString = sprintf('fcn_OSM2SHP_loadShapeFile: Plots the roads in the shape file');
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 figure(figNum); 
 clf;
@@ -201,7 +204,7 @@ clf;
 shapeFileString = "state_college_roads.shp";
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_plotSHP(shapeFileString, figNum);
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, figNum);
 
 % % Use this to create "osm_standard" options for geobasemap
 % name = "osm_standard";

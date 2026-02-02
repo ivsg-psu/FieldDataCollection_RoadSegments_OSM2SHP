@@ -57,8 +57,8 @@ Search for this, and you will find!
     </li>
     <li><a href="#functions">Functions</li>
       <ul>
-        <li><a href="#fcn_osm2shp_plotshp">fcn_OSM2SHP_plotSHP</li>
-        <li><a href="#fcn_osm2shp_convertutctodatetime">fcn_OSM2SHP_convertUTCToDatetime</li>
+        <li><a href="#fcn_osm2shp_loadshapefile">fcn_OSM2SHP_loadShapeFile - Loads a shape file </li>
+        <li><a href="#fcn_osm2shp_convertutctodatetime">fcn_OSM2SHP_convertUTCToDatetime - converts the timestamp to Date-time format</li>
       </ul>
     <li><a href="#usage">Usage</a></li>
      <ul>
@@ -132,7 +132,7 @@ The following are the top level directories within the repository:
 <!-- FUNCTION DEFINITIONS -->
 ## Functions
 
-### fcn_OSM2SHP_plotSHP
+### fcn_OSM2SHP_loadShapeFile
 
 This function takes a shape file as the input and generates a geospatial
 table containing OpenStreetMap (OSM) road features, where each row
