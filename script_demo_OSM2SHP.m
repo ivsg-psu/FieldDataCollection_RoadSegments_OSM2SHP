@@ -44,18 +44,22 @@
 % - In script_test_fcn_OSM2SHP_loadShapeFile
 %   % * Added assertion tests for the table output (type, size, and values)
 % - Updated ReadME.md file
-% 
-% 2026_02_02 by Aneesh Batchu, abb6486@psu.edu
-% - Renamed "fcn_OSM2SHP_plotSHP" to "fcn_OSM2SHP_loadShapeFile"
-% - Tested repo for release (Line 177)
-%  % * Passed all tests  
 %
+% 2026_02_02 by Sean Brennan, sbrennan@psu.edu
 % - In this main demo code:
 %   % * Fixed fcn_INTERNAL_checkRequiredLargeDataFiles to find files even
 %   %   % if not installed in root of LargeData, for example if installed in
 %   %   % subfolders of the same folder or within the Data folder.
 %   % * Fixed fprintf statements to include correct designator for terminal
 %   %   % so that it is now: fprintf(1,"Stuff...");
+%
+% 2026_02_02 by Aneesh Batchu, abb6486@psu.edu
+% - Renamed "fcn_OSM2SHP_plotSHP" to "fcn_OSM2SHP_loadShapeFile"
+% - Tested repo for release (Line 177)
+%  % * Passed all tests  
+%
+% (new submission)
+
 
 % TO-DO:
 % 
