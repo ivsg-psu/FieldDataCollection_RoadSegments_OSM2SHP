@@ -59,14 +59,15 @@
 %  % * Passed all tests  
 %
 % (new submission)
-
+% 
+% 2026_02_03 by Aneesh Batchu, abb6486@psu.edu
+% - Wrote function "fcn_OSM2SHP_extractLLFromGeospatialTable" and the
+%  % corresponding script is also added. 
+% - Tested repo for release (Line 177)
+%  % * Passed all tests 
 
 % TO-DO:
 % 
-% 2026_01_31 by Sean Brennan, sbrennan@psu.edu
-%   % * Update documentation PPT?
-
-
 
 %% Instructions to create LargeData folder
 %
@@ -179,7 +180,7 @@ setenv('MATLABFLAG_PLOTROAD_ALIGNMATLABLLAPLOTTINGIMAGES_LAT','-0.0000008');
 setenv('MATLABFLAG_PLOTROAD_ALIGNMATLABLLAPLOTTINGIMAGES_LON','0.0000054');
 
 %% Test the repo
-if 1==0
+if 1==1
 	fcn_DebugTools_testRepoForRelease('_OSM2SHP_');
 end
 
@@ -270,6 +271,29 @@ assert(isequal(length(geospatial_table.timestamp(:,1)), length(date_time(:,1))))
 figHandles = get(groot, 'Children');
 assert(~any(figHandles==figNum));
 
+%% fcn_OSM2SHP_extractLLFromGeospatialTable: Extract the LL coordinates of OSM State College road segments
+
+figNum = 10003;
+titleString = sprintf('fcn_OSM2SHP_extractLLFromGeospatialTable: Extract the LL coordinates of OSM State College road segments');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
+
+% Shape file string of PA highways 
+shapeFileString = "state_college_roads.shp";
+
+% Create a geospatial table
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, -1);
+
+% Call the function
+[LLCoordinate_allSegments, LL_allSegments_cell] = fcn_OSM2SHP_extractLLFromGeospatialTable(geospatial_table, (figNum));
+
+% Assertions
+assert(length(LLCoordinate_allSegments(:,1)) > size(geospatial_table, 1)); 
+assert(isequal(length(LL_allSegments_cell), size(geospatial_table, 1)));
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
 
 %% Functions follow
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
