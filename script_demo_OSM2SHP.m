@@ -75,6 +75,8 @@
 %   % * Fixed bug where check for data files would ALWAYS pass, even if
 %   %   % files were missing
 %   % * Tested repo for release, passed all tests
+%
+% (new release)
 
 % TO-DO:
 %  
