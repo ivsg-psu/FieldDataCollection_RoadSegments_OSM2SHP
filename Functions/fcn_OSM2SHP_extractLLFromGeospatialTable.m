@@ -50,13 +50,22 @@ function [LLCoordinate_allSegments, LL_allSegments_cell] = fcn_OSM2SHP_extractLL
 % REVISION HISTORY:
 %
 % 2026_02_03 by Aneesh Batchu, abb6486@psu.edu
-% - wrote the code originally
+% - Wrote the code originally
+%
+% 2026_02_07 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_OSM2SHP_extractLLFromGeospatialTable 
+%   % * Added plotting in debugging area to show both types fo data
 
 % TO-DO:
 %
 % 2026_02_03 by Aneesh Batchu, abb6486@psu.edu
-% - Add plotting options to plot the road segments
 % - Add DebugTools options to check the inputs
+%
+% 2026_02_07 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_OSM2SHP_extractLLFromGeospatialTable
+%   % There's a bug in the function where the unique LLA values are being
+%   % reordered in a weird way, causing plots to jump back/forth on same
+%   % segments. See Demo case 1
 
 
 %% Debugging and Input checks
@@ -184,8 +193,32 @@ LLCoordinate_allSegments = cell2mat( ...
 %                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_plots
+	figure(figNum);
 
-    % (ADD PLOTTING OPTIONS)
+	subplot(1,2,1);
+
+	plotFormat.Color = [0 0.7 0];
+	plotFormat.Marker = '.';
+	plotFormat.MarkerSize = 10;
+	plotFormat.LineStyle = '-';
+	plotFormat.LineWidth = 3;
+
+	fcn_plotRoad_plotLL(LLCoordinate_allSegments,(plotFormat),(figNum));
+
+	subplot(1,2,2);
+	% Get the colorOrder
+	ax = gca;
+	colorOrder = ax.ColorOrder;
+	Ncolors = size(colorOrder,1);
+
+	LLIdata = [];
+	for ith_segment = 1:length(LL_allSegments_cell)
+		thisColorIndex = mod(ith_segment-1,Ncolors)+1;
+		thisLLdata = LL_allSegments_cell{ith_segment};
+		NthisLLdata = size(thisLLdata,1);
+		LLIdata = [LLIdata; nan nan nan; [thisLLdata thisColorIndex*ones(NthisLLdata,1)]]; %#ok<AGROW>
+	end
+	[h_plot, indiciesInEachPlot]  = fcn_plotRoad_plotLLI(LLIdata, (plotFormat),  (colorOrder), (figNum)); %#ok<ASGLU>
 
 end
 

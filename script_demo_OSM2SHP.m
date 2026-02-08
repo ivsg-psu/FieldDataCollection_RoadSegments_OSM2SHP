@@ -58,28 +58,44 @@
 % - Tested repo for release (Line 177)
 %  % * Passed all tests  
 %
-% (new submission)
+% (new release)
 % 
 % 2026_02_03 by Aneesh Batchu, abb6486@psu.edu
 % - Wrote function "fcn_OSM2SHP_extractLLFromGeospatialTable" and the
 %  % corresponding script is also added. 
 % - Tested repo for release (Line 177)
 %  % * Passed all tests 
+%
+% 2026_02_07 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_OSM2SHP_extractLLFromGeospatialTable 
+%   % * Added plotting in debugging area to show both types fo data
+% - In script_test_fcn_OSM2SHP_extractLLFromGeospatialTable 
+%   % * Fixed bug where figure open assertion was incorrect (DEMO 10001)
+% - In script_demo_OSM2SHP
+%   % * Fixed bug where check for data files would ALWAYS pass, even if
+%   %   % files were missing
+%   % * Tested repo for release, passed all tests
 
 % TO-DO:
-% 
+%  
+% 2026_02_07 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_OSM2SHP_extractLLFromGeospatialTable
+%   % There's a bug in the function where the unique LLA values are being
+%   % reordered in a weird way, causing plots to jump back/forth on same
+%   % segments. See Demo case 1
 
 %% Instructions to create LargeData folder
 %
 % Create a directory named "LargeData" inside the ExtremaRoadEdge (main)
 % directory.
 %
-% Navigate to: OneDrive/IVSG/GitHubMirror/OSM2SHP_data
+% Navigate to:
+% OneDrive/IVSG/GitHubMirror/FieldDataCollection/RoadSegments/OSM2SHP/LargeData
 % 
 % Download "PA_ALL_roads.zip", "PA_highways.zip" and
 % "pennsylvania-260125.osm.pbf"
 % 
-% Copy above three items into LargeData folder
+% Copy above three items into your this repo's LargeData folder
 % 
 % Unzip "PA_ALL_roads.zip" and "PA_highways.zip"  
 % 
@@ -387,7 +403,7 @@ for nFile = 1:numel(requiredFiles)
     % OLD --> doesn't work unless install is in EXACTLY right location:  
     % filePath = fullfile(largeDataDirectory, fileName);
     % if ~isfile(filePath)
-    if ~exist(fileName,'file')==2
+    if ~exist(fileName,'file')
         fprintf(1,'-------------------------------- Read instructions to proceed ------------------------------\n');
         error('Missing required file: %s', requiredFiles{nFile});
         

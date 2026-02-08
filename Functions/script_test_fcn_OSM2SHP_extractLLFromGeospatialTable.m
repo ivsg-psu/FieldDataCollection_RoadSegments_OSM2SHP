@@ -4,6 +4,10 @@
 %
 % 2026_02_03 by Aneesh Batchu, abb6486@psu.edu
 % - wrote the code originally
+%
+% 2026_02_07 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_OSM2SHP_extractLLFromGeospatialTable 
+%   % * Fixed bug where figure open assertion was incorrect (DEMO 10001)
 
 % TO-DO:
 % 
@@ -50,9 +54,8 @@ geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, -1);
 assert(length(LLCoordinate_allSegments(:,1)) > size(geospatial_table, 1)); 
 assert(isequal(length(LL_allSegments_cell), size(geospatial_table, 1)));
 
-% Make sure plot did NOT open up
-figHandles = get(groot, 'Children');
-assert(~any(figHandles==figNum));
+% Make sure plot opened up
+assert(isequal(get(gcf,'Number'),figNum));
 
 
 %% Test cases start here. These are very simple, usually trivial
@@ -76,27 +79,26 @@ fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
 
 %% TEST case: Extract the LL coordinates of OSM PA highway road segments   
 
-figNum = 20001;
-titleString = sprintf('TEST case: Extract the LL coordinates of OSM PA highway road segments');
-fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); close(figNum);
-
-% Shape file string of PA highways 
-shapeFileString = "PA_highways.shp";
-
-% Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (-1));
-
-% Call the function
-[LLCoordinate_allSegments, LL_allSegments_cell] = fcn_OSM2SHP_extractLLFromGeospatialTable(geospatial_table, (figNum));
-
-% Assertions
-assert(length(LLCoordinate_allSegments(:,1)) > size(geospatial_table, 1)); 
-assert(isequal(length(LL_allSegments_cell), size(geospatial_table, 1)));
-
-% Make sure plot did NOT open up
-figHandles = get(groot, 'Children');
-assert(~any(figHandles==figNum));
+% figNum = 20001;
+% titleString = sprintf('TEST case: Extract the LL coordinates of OSM PA highway road segments');
+% fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+% figure(figNum); close(figNum);
+% 
+% % Shape file string of PA highways 
+% shapeFileString = "PA_highways.shp";
+% 
+% % Call the function
+% geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (-1));
+% 
+% % Call the function
+% [LLCoordinate_allSegments, LL_allSegments_cell] = fcn_OSM2SHP_extractLLFromGeospatialTable(geospatial_table, (figNum));
+% 
+% % Assertions
+% assert(length(LLCoordinate_allSegments(:,1)) > size(geospatial_table, 1)); 
+% assert(isequal(length(LL_allSegments_cell), size(geospatial_table, 1)));
+% 
+% % Make sure plot opened up
+% assert(isequal(get(gcf,'Number'),figNum));
 
 %% Fast Mode Tests
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
