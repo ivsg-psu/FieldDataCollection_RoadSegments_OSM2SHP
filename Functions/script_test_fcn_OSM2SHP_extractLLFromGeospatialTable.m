@@ -39,7 +39,7 @@ fprintf(1,'Figure: 1XXXX: DEMO cases\n');
 figNum = 10001;
 titleString = sprintf('DEMO case: Extract the LL coordinates of OSM State College road segments');
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); close(figNum);
+figure(figNum); clf;
 
 % Shape file string of PA highways 
 shapeFileString = "state_college_roads.shp";

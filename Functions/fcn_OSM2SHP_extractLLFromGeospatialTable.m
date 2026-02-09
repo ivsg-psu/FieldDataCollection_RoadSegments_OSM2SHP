@@ -55,6 +55,17 @@ function [LLCoordinate_allSegments, LL_allSegments_cell] = fcn_OSM2SHP_extractLL
 % 2026_02_07 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_OSM2SHP_extractLLFromGeospatialTable 
 %   % * Added plotting in debugging area to show both types fo data
+% 
+% 2026_02_09 by Aneesh Batchu, abb6486@psu.edu
+% - In fcn_OSM2SHP_extractLLFromGeospatialTable
+%   % * Added 'stable' to unique function to preserve order and maintain
+%   %   % uniqueness.
+%   % * But, commented out the line with unique function and wrote a line
+%   %   % without the unique function. Repeated coordinates are 
+%   %   % intentionally preserved in road segment geometries to maintain
+%   %   % multi-part connectivity and vertex ordering, or because 
+%   %   % a road segment may revisit the same location 
+%   %   % (e.g., loops or self-intersections).
 
 % TO-DO:
 %
@@ -155,8 +166,13 @@ shapes_allSegments = geospatialTable.Shape;
 % 
 % Note: OSM polylines often contain repeated vertices (especially where
 % segments join, or when data is simplified/edited).
+% LL_allSegments_cell = arrayfun(@(ith_shape) ...
+%     unique([ith_shape.InternalData.VertexCoordinate1(:), ith_shape.InternalData.VertexCoordinate2(:)], 'rows', 'stable'), ...
+%     shapes_allSegments, ...
+%     'UniformOutput', false);
+
 LL_allSegments_cell = arrayfun(@(ith_shape) ...
-    unique([ith_shape.InternalData.VertexCoordinate1(:), ith_shape.InternalData.VertexCoordinate2(:)], 'rows'), ...
+    [ith_shape.InternalData.VertexCoordinate1(:), ith_shape.InternalData.VertexCoordinate2(:)], ...
     shapes_allSegments, ...
     'UniformOutput', false);
 

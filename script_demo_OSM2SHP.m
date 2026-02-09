@@ -77,6 +77,17 @@
 %   % * Tested repo for release, passed all tests
 %
 % (new release)
+% 
+% 2026_02_09 by Aneesh Batchu, abb6486@psu.edu
+% - In fcn_OSM2SHP_extractLLFromGeospatialTable
+%   % * Added 'stable' to unique function to preserve order and maintain
+%   %   % uniqueness.
+%   % * But, commented out the line with unique function and wrote a line
+%   %   % without the unique function. Repeated coordinates might be 
+%   %   % intentionally preserved in road segment geometries to maintain
+%   %   % multi-part connectivity and vertex ordering, or because 
+%   %   % a road segment may revisit the same location 
+%   %   % (e.g., loops or self-intersections).
 
 % TO-DO:
 %  
