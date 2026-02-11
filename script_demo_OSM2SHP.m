@@ -88,6 +88,9 @@
 %   %   % multi-part connectivity and vertex ordering, or because 
 %   %   % a road segment may revisit the same location 
 %   %   % (e.g., loops or self-intersections).
+%
+% (new release)
+
 
 % TO-DO:
 %  
