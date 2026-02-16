@@ -10,7 +10,8 @@
 % abb6486@psu.edu or Sean Brennan at sbrennan@psu.edu
 %
 % The purpose of the code is to generate shape (.shp) files from OSM
-% (.osm.pbf) files and geoplot the shape files.
+% (.osm.pbf) files, extract the attributes from shape files and geoplot the
+% shape files.
 
 % REVISION HISTORY:
 % 
