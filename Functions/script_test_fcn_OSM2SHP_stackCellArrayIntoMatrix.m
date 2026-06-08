@@ -1,16 +1,17 @@
-%% script_test_fcn_OSM2SHP_loadShapeFile
+%% script_test_fcn_OSM2SHP_stackCellArrayIntoMatrix
 
 % REVISION HISTORY:
 %
-% 2026_01_27 by Aneesh Batchu, abb6486@psu.edu
-% - wrote the code originally
+% 2026_03_14 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_OSM2SHP_stackCellArrayIntoMatrix
+%   % * Wrote the code originally
 % 
-% 2026_02_01 by Aneesh Batchu, abb6486@psu.edu
-% - In script_test_fcn_OSM2SHP_loadShapeFile
-%   % * Update the script to the new format (Demos, Tests, Fastmode, Bugs)
-% - In script_test_fcn_OSM2SHP_loadShapeFile
-%   % * Added assertion tests for the table output (type, size, and values)
+% 2026_06_06 by Aneesh Batchu, abb6486@psu.edu
+% - In script_test_fcn_OSM2SHP_stackCellArrayIntoMatrix
+%   % * Copied this function to OSM2SHP from PennDOTSHP
 
+% TO-DO:
+% 
 
 %% Set up the workspace
 
@@ -34,28 +35,43 @@ close all
 close all;
 fprintf(1,'Figure: 1XXXX: DEMO cases\n');
 
-%% DEMO case: Plotting State College roads
+%% DEMO case: Demonstrate matrix stacking using data from PA PennDOT roads
 
 figNum = 10001;
-titleString = sprintf('DEMO case: Plotting State College roads');
+titleString = sprintf('DEMO case: Demonstrate matrix stacking using data from PA PennDOT roads');
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 figure(figNum); clf;
 
-% Shape file string of PA highways 
-shapeFileString = "state_college_roads.shp";
+sourceDataFileName = 'PennDOT_LLcoordinates';
+sourceDataFilePath = fullfile(pwd,'Data',cat(2,sourceDataFileName,'.mat'));
+if exist(sourceDataFilePath,'file')
+    load(sourceDataFilePath,'PennDOT_LLSegments_matrix','PennDOT_LLSegments_cellArray');
+else
+	error('Unable to find load file:\n\t%s\n. Run main demo script to produce this.\n',sourceDataFilePath);
+end
+
+cellArrayToStack = PennDOT_LLSegments_cellArray;
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
+stackedMatrix = fcn_OSM2SHP_stackCellArrayIntoMatrix(cellArrayToStack, (figNum));
 
-% Assertions
-assert(isequal(class(geospatial_table), 'table'))
-assert(isequal(size(geospatial_table), [7130,29]))
+sgtitle(titleString, 'Interpreter','none');
 
-requiredVars = ["Shape","highway","id","timestamp","length"];
-assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
+% Check variable types
+assert(isnumeric(stackedMatrix));
+
+% Check variable sizes
+Nrows = size(cellArrayToStack{1},1);
+Ncols = size(cellArrayToStack{1},2);
+assert(size(stackedMatrix,1)>=Nrows); 
+assert(size(stackedMatrix,2)==Ncols); 
+
+% Check variable values
+assert(isequaln(stackedMatrix,PennDOT_LLSegments_matrix));
 
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
+
 
 %% Test cases start here. These are very simple, usually trivial
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,51 +92,16 @@ assert(isequal(get(gcf,'Number'),figNum));
 close all;
 fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
 
-%% TEST case: Plotting PA highways  
+%% TEST case: Extract the LL coordinates of OSM PA highway road segments   
 
-figNum = 20001;
-titleString = sprintf('TEST case: Plotting PA highways');
-fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); clf;
+% figNum = 20001;
+% titleString = sprintf('TEST case: Extract the LL coordinates of OSM PA highway road segments');
+% fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+% figure(figNum); close(figNum);
 
-% Shape file string of PA highways 
-shapeFileString = "PA_highways.shp";
 
-% Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
 
-% Assertions
-assert(isequal(class(geospatial_table), 'table'))
-assert(isequal(size(geospatial_table), [61523,41]))
 
-requiredVars = ["Shape","highway","id","timestamp","length"];
-assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
-
-% Make sure plot opened up
-assert(isequal(get(gcf,'Number'),figNum));
-
-%% TEST case: Plotting all PA roads - Takes too long to plot (need to find a way to plot it faster)
-
-figNum = 20002;
-titleString = sprintf('TEST case: Plotting all PA roads');
-fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); clf;
-
-% Shape file string of PA highways 
-shapeFileString = "PA_ALL_roads.shp";
-
-% Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
-
-% Assertions
-assert(isequal(class(geospatial_table), 'table'))
-assert(isequal(size(geospatial_table), [1385186, 41]))
-
-requiredVars = ["Shape","highway","id","timestamp","length"];
-assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
-
-% Make sure plot opened up
-assert(isequal(get(gcf,'Number'),figNum));
 
 %% Fast Mode Tests
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -145,14 +126,30 @@ figNum = 80001;
 fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
 figure(figNum); close(figNum);
 
-% Shape file string of state college highways 
-shapeFileString = "state_college_roads.shp";
+sourceDataFileName = 'PennDOT_LLcoordinates';
+sourceDataFilePath = fullfile(pwd,'Data',cat(2,sourceDataFileName,'.mat'));
+if exist(sourceDataFilePath,'file')
+    load(sourceDataFilePath,'PennDOT_LLSegments_matrix','PennDOT_LLSegments_cellArray');
+else
+	error('Unable to find load file:\n\t%s\n. Run main demo script to produce this.\n',sourceDataFilePath);
+end
+
+cellArrayToStack = PennDOT_LLSegments_cellArray;
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, ([]));
+stackedMatrix = fcn_OSM2SHP_stackCellArrayIntoMatrix(cellArrayToStack, ([]));
 
-% Assertions
-assert(isequal(class(geospatial_table), 'table'))
+% Check variable types
+assert(isnumeric(stackedMatrix));
+
+% Check variable sizes
+Nrows = size(cellArrayToStack{1},1);
+Ncols = size(cellArrayToStack{1},2);
+assert(size(stackedMatrix,1)>=Nrows); 
+assert(size(stackedMatrix,2)==Ncols); 
+
+% Check variable values
+assert(isequaln(stackedMatrix,PennDOT_LLSegments_matrix));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -164,14 +161,30 @@ figNum = 80002;
 fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
 figure(figNum); close(figNum);
 
-% Shape file string of PA highways 
-shapeFileString = "state_college_roads.shp";
+sourceDataFileName = 'PennDOT_LLcoordinates';
+sourceDataFilePath = fullfile(pwd,'Data',cat(2,sourceDataFileName,'.mat'));
+if exist(sourceDataFilePath,'file')
+    load(sourceDataFilePath,'PennDOT_LLSegments_matrix','PennDOT_LLSegments_cellArray');
+else
+	error('Unable to find load file:\n\t%s\n. Run main demo script to produce this.\n',sourceDataFilePath);
+end
+
+cellArrayToStack = PennDOT_LLSegments_cellArray;
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (-1));
+stackedMatrix = fcn_OSM2SHP_stackCellArrayIntoMatrix(cellArrayToStack, (-1));
 
-% Assertions
-assert(isequal(class(geospatial_table), 'table'))
+% Check variable types
+assert(isnumeric(stackedMatrix));
+
+% Check variable sizes
+Nrows = size(cellArrayToStack{1},1);
+Ncols = size(cellArrayToStack{1},2);
+assert(size(stackedMatrix,1)>=Nrows); 
+assert(size(stackedMatrix,2)==Ncols); 
+
+% Check variable values
+assert(isequaln(stackedMatrix,PennDOT_LLSegments_matrix));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -183,17 +196,24 @@ figNum = 80003;
 fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
 figure(figNum); close(figNum);
 
-% Shape file string of PA highways
-shapeFileString = "state_college_roads.shp";
+sourceDataFileName = 'PennDOT_LLcoordinates';
+sourceDataFilePath = fullfile(pwd,'Data',cat(2,sourceDataFileName,'.mat'));
+if exist(sourceDataFilePath,'file')
+    load(sourceDataFilePath,'PennDOT_LLSegments_matrix','PennDOT_LLSegments_cellArray');
+else
+	error('Unable to find load file:\n\t%s\n. Run main demo script to produce this.\n',sourceDataFilePath);
+end
 
-Niterations = 10;
+cellArrayToStack = PennDOT_LLSegments_cellArray;
+
+Niterations = 5;
 
 % Do calculation without pre-calculation
 tic;
 for ith_test = 1:Niterations
 
-    % Call the function
-    geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, ([]));
+	% Call the function
+	stackedMatrix = fcn_OSM2SHP_stackCellArrayIntoMatrix(cellArrayToStack, ([]));
 
 end
 slow_method = toc;
@@ -203,8 +223,8 @@ tic;
 
 for ith_test = 1:Niterations
 
-    % Call the function
-    geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (-1));
+	% Call the function
+	stackedMatrix = fcn_OSM2SHP_stackCellArrayIntoMatrix(cellArrayToStack, (-1));
 
 end
 fast_method = toc;
@@ -219,9 +239,6 @@ X = reordercats(X,{'Normal mode','Fast mode'}); % Forces bars to appear in this 
 Y = [slow_method fast_method ]*1000/Niterations;
 bar(X,Y)
 ylabel('Execution time (Milliseconds)')
-
-% Assertions
-assert(isequal(class(geospatial_table), 'table'))
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -254,18 +271,6 @@ if 1==0
     figNum = 90001;
     fprintf(1,'Figure: %.0f:Bug case\n',figNum);
     figure(figNum); close(figNum);
-
-    % Shape file string of PA highways
-    shapeFileString = 5;
-
-    % Call the function
-    geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
-
-    % Assertions
-    assert(isequal(class(geospatial_table), 'table'))
-
-    % Make sure plot opened up
-    assert(isequal(get(gcf,'Number'),figNum));
 
 end
 

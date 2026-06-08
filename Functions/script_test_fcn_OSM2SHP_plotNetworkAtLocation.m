@@ -1,16 +1,14 @@
-%% script_test_fcn_OSM2SHP_loadShapeFile
+ %% script_test_fcn_OSM2SHP_plotNetworkAtLocation
 
 % REVISION HISTORY:
 %
-% 2026_01_27 by Aneesh Batchu, abb6486@psu.edu
-% - wrote the code originally
-% 
-% 2026_02_01 by Aneesh Batchu, abb6486@psu.edu
-% - In script_test_fcn_OSM2SHP_loadShapeFile
-%   % * Update the script to the new format (Demos, Tests, Fastmode, Bugs)
-% - In script_test_fcn_OSM2SHP_loadShapeFile
-%   % * Added assertion tests for the table output (type, size, and values)
+% 2026_03_16 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_OSM2SHP_plotNetworkAtLocation
+%   % * Wrote the code originally
+%
 
+% TO-DO:
+% 
 
 %% Set up the workspace
 
@@ -34,28 +32,30 @@ close all
 close all;
 fprintf(1,'Figure: 1XXXX: DEMO cases\n');
 
-%% DEMO case: Plotting State College roads
+%% DEMO case: Plot OSM2 network around Altoona only
 
 figNum = 10001;
-titleString = sprintf('DEMO case: Plotting State College roads');
+titleString = sprintf('DEMO case: Plot OSM network around Altoona only');
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 figure(figNum); clf;
 
-% Shape file string of PA highways 
-shapeFileString = "state_college_roads.shp";
+sourceDataFileName = 'OSM_LLcoordinates';
+sourceDataFilePath = fullfile(pwd,'LargeData',cat(2,sourceDataFileName,'.mat'));
+if exist(sourceDataFilePath,'file')
+    load(sourceDataFilePath,'OSM_LLSegments_cellArray');
+else
+	error('Unable to find load file:\n\t%s\n. Run main demo script to produce this.\n',sourceDataFilePath);
+end
+
+mapCenter = [40.4453 -78.4351]; 
+zoomLevel = 14.625;
 
 % Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
-
-% Assertions
-assert(isequal(class(geospatial_table), 'table'))
-assert(isequal(size(geospatial_table), [7130,29]))
-
-requiredVars = ["Shape","highway","id","timestamp","length"];
-assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
+fcn_OSM2SHP_plotNetworkAtLocation(OSM_LLSegments_cellArray, mapCenter, zoomLevel, figNum);
 
 % Make sure plot opened up
 assert(isequal(get(gcf,'Number'),figNum));
+
 
 %% Test cases start here. These are very simple, usually trivial
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,51 +76,16 @@ assert(isequal(get(gcf,'Number'),figNum));
 close all;
 fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
 
-%% TEST case: Plotting PA highways  
+%% TEST case: Extract the LL coordinates of OSM PA highway road segments   
 
 figNum = 20001;
-titleString = sprintf('TEST case: Plotting PA highways');
+titleString = sprintf('TEST case: Extract the LL coordinates of OSM PA highway road segments');
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); clf;
+figure(figNum); close(figNum);
 
-% Shape file string of PA highways 
-shapeFileString = "PA_highways.shp";
 
-% Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
 
-% Assertions
-assert(isequal(class(geospatial_table), 'table'))
-assert(isequal(size(geospatial_table), [61523,41]))
 
-requiredVars = ["Shape","highway","id","timestamp","length"];
-assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
-
-% Make sure plot opened up
-assert(isequal(get(gcf,'Number'),figNum));
-
-%% TEST case: Plotting all PA roads - Takes too long to plot (need to find a way to plot it faster)
-
-figNum = 20002;
-titleString = sprintf('TEST case: Plotting all PA roads');
-fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); clf;
-
-% Shape file string of PA highways 
-shapeFileString = "PA_ALL_roads.shp";
-
-% Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
-
-% Assertions
-assert(isequal(class(geospatial_table), 'table'))
-assert(isequal(size(geospatial_table), [1385186, 41]))
-
-requiredVars = ["Shape","highway","id","timestamp","length"];
-assert(all(ismember(requiredVars, geospatial_table.Properties.VariableNames)));
-
-% Make sure plot opened up
-assert(isequal(get(gcf,'Number'),figNum));
 
 %% Fast Mode Tests
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -145,14 +110,18 @@ figNum = 80001;
 fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
 figure(figNum); close(figNum);
 
-% Shape file string of state college highways 
+% Shape file string of PA highways 
 shapeFileString = "state_college_roads.shp";
 
+% Create a geospatial table
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, -1);
+
 % Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, ([]));
+[LLCoordinate_allSegments, LL_allSegments_cell] = fcn_OSM2SHP_plotNetworkAtLocation(geospatial_table, ([]));
 
 % Assertions
-assert(isequal(class(geospatial_table), 'table'))
+assert(length(LLCoordinate_allSegments(:,1)) > size(geospatial_table, 1)); 
+assert(isequal(length(LL_allSegments_cell), size(geospatial_table, 1)));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -167,11 +136,15 @@ figure(figNum); close(figNum);
 % Shape file string of PA highways 
 shapeFileString = "state_college_roads.shp";
 
+% Create a geospatial table
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, -1);
+
 % Call the function
-geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (-1));
+[LLCoordinate_allSegments, LL_allSegments_cell] = fcn_OSM2SHP_plotNetworkAtLocation(geospatial_table, (-1));
 
 % Assertions
-assert(isequal(class(geospatial_table), 'table'))
+assert(length(LLCoordinate_allSegments(:,1)) > size(geospatial_table, 1)); 
+assert(isequal(length(LL_allSegments_cell), size(geospatial_table, 1)));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -186,14 +159,17 @@ figure(figNum); close(figNum);
 % Shape file string of PA highways
 shapeFileString = "state_college_roads.shp";
 
-Niterations = 10;
+% Create a geospatial table
+geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, -1);
+
+Niterations = 5;
 
 % Do calculation without pre-calculation
 tic;
 for ith_test = 1:Niterations
 
     % Call the function
-    geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, ([]));
+    [LLCoordinate_allSegments, LL_allSegments_cell] = fcn_OSM2SHP_plotNetworkAtLocation(geospatial_table, ([]));
 
 end
 slow_method = toc;
@@ -204,7 +180,7 @@ tic;
 for ith_test = 1:Niterations
 
     % Call the function
-    geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (-1));
+    [LLCoordinate_allSegments, LL_allSegments_cell] = fcn_OSM2SHP_plotNetworkAtLocation(geospatial_table, (-1));
 
 end
 fast_method = toc;
@@ -221,7 +197,8 @@ bar(X,Y)
 ylabel('Execution time (Milliseconds)')
 
 % Assertions
-assert(isequal(class(geospatial_table), 'table'))
+assert(length(LLCoordinate_allSegments(:,1)) > size(geospatial_table, 1)); 
+assert(isequal(length(LL_allSegments_cell), size(geospatial_table, 1)));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -254,18 +231,6 @@ if 1==0
     figNum = 90001;
     fprintf(1,'Figure: %.0f:Bug case\n',figNum);
     figure(figNum); close(figNum);
-
-    % Shape file string of PA highways
-    shapeFileString = 5;
-
-    % Call the function
-    geospatial_table = fcn_OSM2SHP_loadShapeFile(shapeFileString, (figNum));
-
-    % Assertions
-    assert(isequal(class(geospatial_table), 'table'))
-
-    % Make sure plot opened up
-    assert(isequal(get(gcf,'Number'),figNum));
 
 end
 

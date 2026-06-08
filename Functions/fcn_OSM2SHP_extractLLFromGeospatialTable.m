@@ -1,4 +1,4 @@
-function [LLCoordinate_allSegments, LL_allSegments_cell] = fcn_OSM2SHP_extractLLFromGeospatialTable(geospatialTable, varargin)
+function [LLSegments_matrix, LLSegments_cellArray] = fcn_OSM2SHP_extractLLFromGeospatialTable(geospatialTable, varargin)
 %% fcn_OSM2SHP_extractLLFromGeospatialTable
 % 
 % This code extracts latitude–longitude vertex coordinates from each
@@ -171,20 +171,33 @@ shapes_allSegments = geospatialTable.Shape;
 %     shapes_allSegments, ...
 %     'UniformOutput', false);
 
-LL_allSegments_cell = arrayfun(@(ith_shape) ...
+LLSegments_cellArray_withEmpty = arrayfun(@(ith_shape) ...
     [ith_shape.InternalData.VertexCoordinate1(:), ith_shape.InternalData.VertexCoordinate2(:)], ...
     shapes_allSegments, ...
     'UniformOutput', false);
 
-% Seperate each road segment with NaN matrix 
-nan_matrix = [NaN NaN];
+% Append the segment ID (the row number) onto each entry
+LLSeg_allSegments_cell_withEmpty = fcn_INTERNAL_appendRowIndexColumn(LLSegments_cellArray_withEmpty);
 
-% Convert road segment cell array into matrix and append NaN matrix at the
-% end of each road segment. 
-LLCoordinate_allSegments = cell2mat( ...
-    cellfun(@(ith_segment) [ith_segment; nan_matrix], LL_allSegments_cell, 'UniformOutput', false) ...
-);
-% toc
+if 1==1
+	% Remove empty cell array entries
+	mask = cellfun(@isempty, LLSeg_allSegments_cell_withEmpty);  % true for cells containing empty arrays
+	LLSegments_cellArray = LLSeg_allSegments_cell_withEmpty(~mask);
+else
+	LLSegments_cellArray = LLSeg_allSegments_cell_withEmpty;
+end
+
+LLSegments_matrix = fcn_OSM2SHP_stackCellArrayIntoMatrix(LLSegments_cellArray, (-1));
+
+% % Seperate each road segment with NaN matrix 
+% nan_matrix = [NaN NaN];
+% 
+% % Convert road segment cell array into matrix and append NaN matrix at the
+% % end of each road segment. 
+% LLCoordinate_allSegments = cell2mat( ...
+%     cellfun(@(ith_segment) [ith_segment; nan_matrix], LLSegments_cellArray, 'UniformOutput', false) ...
+% );
+% % toc
 
 % Additional comments:
 % 
@@ -219,22 +232,36 @@ if flag_do_plots
 	plotFormat.LineStyle = '-';
 	plotFormat.LineWidth = 3;
 
-	fcn_plotRoad_plotLL(LLCoordinate_allSegments,(plotFormat),(figNum));
+	fcn_plotRoad_plotLL(LLSegments_matrix,(plotFormat),(figNum));
 
-	subplot(1,2,2);
-	% Get the colorOrder
-	ax = gca;
-	colorOrder = ax.ColorOrder;
-	Ncolors = size(colorOrder,1);
+	% subplot(1,2,2);
+	% % Get the colorOrder
+	% ax = gca;
+	% colorOrder = ax.ColorOrder;
+	% Ncolors = size(colorOrder,1); 
+	% LLIdata = [];
+	% for ith_segment = 1:length(LLSegments_cellArray)
+	% 	thisColorIndex = mod(ith_segment-1,Ncolors)+1;
+	% 	thisLLdata = LLSegments_cellArray{ith_segment};
+	% 	NthisLLdata = size(thisLLdata,1);
+	% 	LLIdata = [LLIdata; nan nan nan; [thisLLdata thisColorIndex*ones(NthisLLdata,1)]]; %#ok<AGROW>
+	% end
+	% [h_plot, indiciesInEachPlot]  = fcn_plotRoad_plotLLI(LLIdata, (plotFormat),  (colorOrder), (figNum)); %#ok<ASGLU>
 
-	LLIdata = [];
-	for ith_segment = 1:length(LL_allSegments_cell)
-		thisColorIndex = mod(ith_segment-1,Ncolors)+1;
-		thisLLdata = LL_allSegments_cell{ith_segment};
-		NthisLLdata = size(thisLLdata,1);
-		LLIdata = [LLIdata; nan nan nan; [thisLLdata thisColorIndex*ones(NthisLLdata,1)]]; %#ok<AGROW>
-	end
-	[h_plot, indiciesInEachPlot]  = fcn_plotRoad_plotLLI(LLIdata, (plotFormat),  (colorOrder), (figNum)); %#ok<ASGLU>
+
+    subplot(1,2,2);
+    % Get the colorOrder
+    ax = gca;
+    colorOrder = ax.ColorOrder;
+    Ncolors = size(colorOrder,1);
+
+    segmentNumber = LLSegments_matrix(:,3);
+    colorIndex = mod(segmentNumber-1,Ncolors)+1;
+    LLIdata = [LLSegments_matrix(:,1:2) colorIndex];
+    [h_plot, indiciesInEachPlot]  = fcn_plotRoad_plotLLI(LLIdata, (plotFormat),  (colorOrder), (figNum)); %#ok<ASGLU>
+
+    % temp = gca;
+    % set(temp, 'MapCenter', [40.792665826872089 -77.863991325077109], 'ZoomLevel', 19);  % Intersection between South Atherton and W. College Ave
 
 end
 
@@ -255,4 +282,35 @@ end % Ends main function
 %
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+
+function Cout = fcn_INTERNAL_appendRowIndexColumn(Cin)
+% appendRowIndexColumn  Append a column equal to the cell row index
+% Cout = appendRowIndexColumn(Cin)
+% For each cell Cin{i,j} that contains a nonempty numeric or logical matrix M,
+% Cout{i,j} = [M, repmat(i, size(M,1), 1)].
+% Empty matrices are left as-is. Shape of the cell array is preserved.
+
+if ~iscell(Cin)
+    error('Input must be a cell array.');
+end
+
+[m,n] = size(Cin);
+Cout = Cin; % preserve shape and default contents
+
+for ith_cellRow = 1:m
+    for jth_cellCol = 1:n
+        M = Cin{ith_cellRow,jth_cellCol};
+        if isempty(M)
+            continue
+        end
+        if ~(isnumeric(M) || islogical(M))
+            error('Cell (%d,%d) does not contain a numeric or logical matrix.', ith_cellRow, jth_cellCol);
+        end
+        r = size(M,1);
+        % If M is a row vector (r==1) or has multiple rows this still works.
+        newcol = repmat(ith_cellRow, r, 1);
+        Cout{ith_cellRow,jth_cellCol} = [M, newcol];
+    end
+end
+end
 
